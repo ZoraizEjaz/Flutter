@@ -25,7 +25,7 @@ class ChartBar extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey, width: 1.0),
-                    color: Color.fromARGB(220, 220, 220, 1),
+                    color: Colors.lightGreen,
                     borderRadius: BorderRadius.circular(10)),
               ),
               FractionallySizedBox(

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           //primary color use one clolor and does not have shades
           brightness: Brightness.light,
           primaryColor: Colors.lightGreen[800],
-          primarySwatch: Colors.amber,
+          primarySwatch: Colors.green,
           errorColor: Colors.red,
           accentColor: Colors.cyan[600],
           fontFamily: 'Quicksand',
@@ -114,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         home: Scaffold(
       appBar: AppBar(
         title: Text('Personal Expenses'),
+        backgroundColor: Colors.green,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -133,6 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         child: Icon(Icons.add),
         onPressed: () => _startAddNewTransaction(context),
       ),

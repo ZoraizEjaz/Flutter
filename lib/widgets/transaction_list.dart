@@ -38,6 +38,7 @@ class TransactionList extends StatelessWidget {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                   child: ListTile(
                     leading: CircleAvatar(
+                      backgroundColor: Colors.green,
                       radius: 30,
                       child: Padding(
                         padding: EdgeInsets.all(6),
@@ -65,6 +66,6 @@ class TransactionList extends StatelessWidget {
               },
               itemCount: transcations.length,
             ),
-    );
+    ); 
   }
 }

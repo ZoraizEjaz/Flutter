@@ -1,3 +1,4 @@
+import 'dart:io';
 import './widgets/chart.dart';
 import 'package:expense_showcase/widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
@@ -102,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
         context: ctx,
+        isScrollControlled: true,
         builder: (_) {
           return GestureDetector(
             onTap: () {},
@@ -121,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandScape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandScape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text('Personal Expenses'),
       backgroundColor: Colors.green,
@@ -135,9 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     final txListWidget = Container(
-      height:
-          (MediaQuery.of(context).size.height - appBar.preferredSize.height) *
-              0.7,
+      height: (mediaQuery.size.height - appBar.preferredSize.height) * 0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
 
@@ -154,7 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Show Chart'),
-                  Switch(
+                  //by adding the adaptive keyword it will behave different in android and iOS
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (val) {
                       setState(() {
@@ -169,35 +171,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 //1 means complete height and 0 means zero height
                 //we are taking 40% of the height
                 // we to get the exact hieght we also minus the appbar height
-                height: (MediaQuery.of(context).size.height -
+                height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
+                        mediaQuery.padding.top) *
                     0.3,
                 child: Chart(_recentTransactions),
               ),
             if (!isLandScape) txListWidget,
-            if(isLandScape)
-            _showChart
-                ? Container(
-                    //1 means complete height and 0 means zero height
-                    //we are taking 40% of the height
-                    // we to get the exact hieght we also minus the appbar height
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget
+            if (isLandScape)
+              _showChart
+                  ? Container(
+                      //1 means complete height and 0 means zero height
+                      //we are taking 40% of the height
+                      // we to get the exact hieght we also minus the appbar height
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : txListWidget
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              backgroundColor: Colors.green,
+              child: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context),
+            ),
     ));
   }
 }

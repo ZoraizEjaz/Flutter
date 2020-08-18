@@ -5,14 +5,14 @@ import 'package:intl/intl.dart';
 class TransactionList extends StatelessWidget {
   final List<Transaction> transcations;
   final Function deleteTx;
-  
+
   TransactionList(@required this.transcations, this.deleteTx);
 
   @override
   Widget build(BuildContext context) {
     return transcations.isEmpty
-          ? LayoutBuilder(builder: (ctx, constraints){
-            return  Column(
+        ? LayoutBuilder(builder: (ctx, constraints) {
+            return Column(
               children: <Widget>[
                 Text(
                   'No transaction has been added yet!',
@@ -31,12 +31,12 @@ class TransactionList extends StatelessWidget {
               ],
             );
           })
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-                  child: ListTile(
+        : ListView.builder(
+            itemBuilder: (ctx, index) {
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.green,
                       radius: 30,
@@ -53,19 +53,26 @@ class TransactionList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat.yMMMd().format(transcations[index].date),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Theme.of(context).errorColor,
-                      onPressed: () => deleteTx(transcations[index].id),
-                      //we can not use deleteTx only here 
-                      //as this function is present in main.dart file
-                      //we have to make it anonymous function
+                    trailing: MediaQuery.of(context).size.width > 360
+                        ? FlatButton.icon(
+                            icon: Icon(Icons.delete),
+                            label: Text('Delete'),
+                            textColor: Theme.of(context).errorColor,
+                            onPressed: () => deleteTx(transcations[index].id),
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Theme.of(context).errorColor,
+                            onPressed: () => deleteTx(transcations[index].id),
+                          )
+
+                    //we can not use deleteTx only here
+                    //as this function is present in main.dart file
+                    //we have to make it anonymous function
                     ),
-                  ),
-                );
-              },
-              itemCount: transcations.length,
-            );
-   
+              );
+            },
+            itemCount: transcations.length,
+          );
   }
 }

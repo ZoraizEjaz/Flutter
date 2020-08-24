@@ -122,6 +122,63 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Widget> _buildLandscapeContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          //by adding the adaptive keyword it will behave different in android and iOS
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      _showChart
+          ? Container(
+              //1 means complete height and 0 means zero height
+              //we are taking 40% of the height
+              // we to get the exact hieght we also minus the appbar height
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txListWidget
+    ];
+  }
+
+  List<Widget> _buildPotraitscapeContent(
+    MediaQueryData mediaQuery,
+    AppBar appBar,
+    Widget txListWidget,
+  ) {
+    return [
+      Container(
+        //1 means complete height and 0 means zero height
+        //we are taking 40% of the height
+        // we to get the exact hieght we also minus the appbar height
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txListWidget,
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -134,8 +191,10 @@ class _MyHomePageState extends State<MyHomePage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                GestureDetector(child: Icon(CupertinoIcons.add),
-                onTap: ()=> _startAddNewTransaction(context),)
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: () => _startAddNewTransaction(context),
+                )
               ],
             ),
           )
@@ -155,53 +214,18 @@ class _MyHomePageState extends State<MyHomePage> {
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
 
-    final pageBody = SafeArea(child: SingleChildScrollView(
+    final pageBody = SafeArea(
+        child: SingleChildScrollView(
       child: Column(
         //mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           if (isLandScape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Show Chart', style: Theme.of(context).textTheme.bodyText1,),
-                //by adding the adaptive keyword it will behave different in android and iOS
-                Switch.adaptive(
-                  activeColor: Theme.of(context).accentColor,
-                  value: _showChart,
-                  onChanged: (val) {
-                    setState(() {
-                      _showChart = val;
-                    });
-                  },
-                ),
-              ],
-            ),
+            //these three dots pull out all the data from the list and merge it as a single item
+            ..._buildLandscapeContent(mediaQuery, appBar, txListWidget),
           if (!isLandScape)
-            Container(
-              //1 means complete height and 0 means zero height
-              //we are taking 40% of the height
-              // we to get the exact hieght we also minus the appbar height
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.3,
-              child: Chart(_recentTransactions),
-            ),
-          if (!isLandScape) txListWidget,
-          if (isLandScape)
-            _showChart
-                ? Container(
-                    //1 means complete height and 0 means zero height
-                    //we are taking 40% of the height
-                    // we to get the exact hieght we also minus the appbar height
-                    height: (mediaQuery.size.height -
-                            appBar.preferredSize.height -
-                            mediaQuery.padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget
+            //these three dots pull out all the data from the list and merge it as a single item
+            ..._buildPotraitscapeContent(mediaQuery, appBar, txListWidget),
         ],
       ),
     ));

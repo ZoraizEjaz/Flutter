@@ -31,12 +31,17 @@ class TransactionList extends StatelessWidget {
               ],
             );
           })
-        : ListView.builder(
-            itemBuilder: (ctx, index) {
-              return TransactionItem(
-                  transcation: transcations[index], deleteTx: deleteTx);
-            },
-            itemCount: transcations.length,
+        : ListView(
+            //replace Listview builder with listview so that we can pass a unique key.
+            //Otherwise in case of deletion Widget tree and element tree will not be synced correctely and
+            //element tree will hold the wrong state of widget tree
+            children: transcations
+                .map((tx) => TransactionItem(
+                      key: ValueKey(tx.id),
+                      transcation: tx,
+                      deleteTx: deleteTx,
+                    ))
+                .toList(),
           );
   }
 }
